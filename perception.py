@@ -27,12 +27,14 @@ def main():
 
     bot.arm.set_ee_pose_components(x=x, y=y, z=z+0.05, pitch=0.5)
     bot.arm.go_to_home_pose()
+    bot.arm.set_ee_pose_components(x=-0.3, z=-0.4, moving_time=1.5)
 
     bot.base.move_to_pose(0, 0, 0, True)
 
     bot.arm.set_ee_pose_components(x=0.3, z=0.2, moving_time=1.5)
     bot.arm.set_ee_pose_components(x=x, y=y, z=z-0.05, pitch=0.5)
     bot.gripper.open()
+    bot.arm.go_to_home_pose()
     bot.arm.go_to_sleep_pose()
 
 if __name__=='__main__':
