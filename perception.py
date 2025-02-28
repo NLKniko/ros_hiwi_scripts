@@ -19,7 +19,7 @@ def main():
     bot.arm.set_ee_pose_components(x=0.3, z=0.2, moving_time=1.5)
     bot.gripper.open()
 
-    if clusters is not None:
+    if len(clusters)>0:
        for cluster in clusters:
            x, y, z = cluster["position"]
            bot.arm.set_ee_pose_components(x=x, y=y, z=z+0.05, pitch=0.5)
@@ -42,7 +42,7 @@ def main():
 
     bot.base.move_to_pose(0, 0, -1.7, True)
 
-    bot.arm.set_ee_pose_components(x=0.3, z=0.05, moving_time=1.5)
+    bot.arm.set_ee_pose_components(x=0.3, z=0.1, moving_time=1.5)
     bot.gripper.open()
     bot.camera.pan_tilt_move(0,0)
     bot.arm.go_to_home_pose()
