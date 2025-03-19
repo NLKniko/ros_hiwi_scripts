@@ -36,6 +36,7 @@ def main():
 
             # Move to drop-off location (adjust as needed)
             drop_x, drop_y, drop_z = 0.4, -0.2, 0.1  # Example drop-off coordinates
+            bot.base.move_to_pose(drop_x, drop_y, 0.314, True)
             bot.arm.set_ee_pose_components(x=drop_x, y=drop_y, z=drop_z+0.05, pitch=-0.5)
             bot.arm.set_ee_pose_components(x=drop_x, y=drop_y, z=drop_z, pitch=-0.5)
 

@@ -25,6 +25,17 @@ def main():
            bot.arm.set_ee_pose_components(x=x, y=y, z=z+0.05, pitch=0.5)
            bot.arm.set_ee_pose_components(x=x, y=y, z=z, pitch=0.5)
            bot.gripper.close()
+           bot.camera.pan_tilt_move(0,0.2618)
+           bot.arm.set_ee_pose_components(x=x, y=y, z=z+0.05, pitch=-0.5)
+           bot.arm.go_to_home_pose()
+           bot.arm.go_to_sleep_pose()
+           bot.base.move_to_pose(0, 0, -1.7, True)   
+           bot.arm.set_ee_pose_components(x=0.3, z=0.1, moving_time=1.5)
+           bot.gripper.open()    
+           bot.arm.go_to_home_pose()
+           bot.arm.go_to_sleep_pose()
+           bot.base.move_to_pose(0.3, -2, 0.314, True)
+           bot.camera.pan_tilt_move(0,0.75)
     else:
         rospy.loginfo("There is nothing here, return to home position")
         time.sleep(1)
@@ -32,15 +43,6 @@ def main():
         bot.arm.go_to_home_pose()
         bot.arm.go_to_sleep_pose()
         bot.base.move_to_pose(0, 0, -1.7, True)
-
-    bot.camera.pan_tilt_move(0,0.2618)
-
-    bot.arm.set_ee_pose_components(x=x, y=y, z=z+0.05, pitch=-0.5)
-    bot.arm.go_to_home_pose()
-    bot.arm.go_to_sleep_pose()
-    
-
-    bot.base.move_to_pose(0, 0, -1.7, True)
 
     bot.arm.set_ee_pose_components(x=0.3, z=0.1, moving_time=1.5)
     bot.gripper.open()
