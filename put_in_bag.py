@@ -32,20 +32,23 @@ def main():
             time.sleep(1)
 
             # Move up after grasping
-            bot.arm.set_ee_pose_components(x=x, y=y, z=z+0.1, pitch=0.5)
+            bot.arm.set_ee_pose_components(x=x, y=y, z=z+0.05, pitch=-0.5)
+            bot.arm.go_to_home_pose()
+            bot.arm.go_to_sleep_pose()
 
             # Move to drop-off location (adjust as needed)
-            drop_x, drop_y, drop_z = 0.4, -0.2, 0.1  # Example drop-off coordinates
+            drop_x, drop_y = 0, 0  # Example drop-off coordinates
             bot.base.move_to_pose(drop_x, drop_y, 0.314, True)
-            bot.arm.set_ee_pose_components(x=drop_x, y=drop_y, z=drop_z+0.05, pitch=-0.5)
-            bot.arm.set_ee_pose_components(x=drop_x, y=drop_y, z=drop_z, pitch=-0.5)
+            bot.arm.set_ee_pose_components(x=drop_x, y=drop_y, z=0.1, moving_time=1.5)
 
             # Release the object
             bot.gripper.open()
-            time.sleep(1)
+            bot.arm.go_to_home_pose()
+            bot.arm.go_to_sleep_pose()
 
             # Move back up before next cycle
-            bot.arm.set_ee_pose_components(x=drop_x, y=drop_y, z=drop_z+0.1, pitch=-0.5)
+            bot.base.move_to_pose(0.15, -2.5, 0.314, True)
+            bot.camera.pan_tilt_move(0,0.75)
         
         rospy.loginfo("All objects have been processed.")
     
