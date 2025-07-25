@@ -3,7 +3,6 @@ import time
 from interbotix_xs_modules.locobot import InterbotixLocobotXS
 import rospy
 from geometry_msgs.msg import Twist
-from math import pi
 
 # To get started, open a terminal and type...
 # 'roslaunch interbotix_xslocobot_control xslocobot_python.launch robot_model:=locobot_wx250s use_nav:=true use_lidar:=true rtabmap_args:=-d enable_pipeline:=true use_perception:=true'
@@ -13,7 +12,11 @@ from math import pi
 def main():
     bot = InterbotixLocobotXS(robot_model="locobot_wx250s", arm_model="mobile_wx250s", use_move_base_action=True)
     bot.camera.pan_tilt_move(0,0.2618)
-    bot.base.move_to_pose(0.15, -2.5, 0.314, True)
+    cargo_pos_x = float(input("Please enter the x-coordinate of cargo position: "))
+    cargo_pos_y = float(input("Please enter the y-coordinate of cargo position: "))
+    drop_x = float(input("Please enter the x-coordinate of the drop-off position: "))
+    drop_y = float(input("Please enter the y-coordinate of the drop-off position: "))
+    bot.base.move_to_pose(cargo_pos_x, cargo_pos_y, 0.314, True)
     bot.camera.pan_tilt_move(0,0.75)
     success, clusters = bot.pcl.get_cluster_positions(ref_frame="locobot/arm_base_link", sort_axis="y", reverse=True)
     bot.arm.set_ee_pose_components(x=0.3, z=0.2, moving_time=1.5)
@@ -37,7 +40,7 @@ def main():
             bot.arm.go_to_sleep_pose()
 
             # Move to drop-off location (adjust as needed)
-            drop_x, drop_y = 0, 0  # Example drop-off coordinates
+            # drop_x, drop_y = 0, 0  # Example drop-off coordinates
             bot.base.move_to_pose(drop_x, drop_y, 0.314, True)
             bot.arm.set_ee_pose_components(x=drop_x, y=drop_y, z=0.1, moving_time=1.5)
 
@@ -47,10 +50,14 @@ def main():
             bot.arm.go_to_sleep_pose()
 
             # Move back up before next cycle
-            bot.base.move_to_pose(0.15, -2.5, 0.314, True)
+            bot.base.move_to_pose(cargo_pos_x, cargo_pos_y, 0.314, True)
             bot.camera.pan_tilt_move(0,0.75)
+            bot.arm.set_ee_pose_components(x=0.3, z=0.2, moving_time=1.5)
+            bot.gripper.open()
         
         rospy.loginfo("All objects have been processed.")
+        bot.arm.go_to_home_pose()
+        bot.arm.go_to_sleep_pose()
     
     else:
         rospy.loginfo("No objects detected, returning home.")
@@ -61,7 +68,6 @@ def main():
     bot.base.move_to_pose(0, 0, -1.7, True)
 
     bot.arm.set_ee_pose_components(x=0.3, z=0.1, moving_time=1.5)
-    bot.gripper.open()
     bot.camera.pan_tilt_move(0,0)
     bot.arm.go_to_home_pose()
     bot.arm.go_to_sleep_pose()
