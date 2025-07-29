@@ -16,15 +16,17 @@ def main():
     cargo_pos_y = float(input("Please enter the y-coordinate of cargo position: "))
     drop_x = float(input("Please enter the x-coordinate of the drop-off position: "))
     drop_y = float(input("Please enter the y-coordinate of the drop-off position: "))
-    bot.base.move_to_pose(cargo_pos_x, cargo_pos_y, 0.314, True)
+    drop_z = float(input("Please enter the z-coordinate of the drop-off position: "))
+    bot.base.move_to_pose(cargo_pos_x, cargo_pos_y, -0.314, True)
     bot.camera.pan_tilt_move(0,0.75)
     success, clusters = bot.pcl.get_cluster_positions(ref_frame="locobot/arm_base_link", sort_axis="y", reverse=True)
-    bot.arm.set_ee_pose_components(x=0.3, z=0.2, moving_time=1.5)
-    bot.gripper.open()
 
     if len(clusters) > 0:
         for cluster in clusters:
             x, y, z = cluster["position"]
+
+            bot.arm.set_ee_pose_components(x=0.3, z=0.2, moving_time=1.5)
+            bot.gripper.open()
 
             # Move above the object
             bot.arm.set_ee_pose_components(x=x, y=y, z=z+0.05, pitch=0.5)
@@ -41,8 +43,8 @@ def main():
 
             # Move to drop-off location (adjust as needed)
             # drop_x, drop_y = 0, 0  # Example drop-off coordinates
-            bot.base.move_to_pose(drop_x, drop_y, 0.314, True)
-            bot.arm.set_ee_pose_components(x=drop_x, y=drop_y, z=0.1, moving_time=1.5)
+            bot.base.move_to_pose(drop_x-0.1, drop_y-0.1, -0.314, True)
+            bot.arm.set_ee_pose_components(x=drop_x, y=drop_y, z=drop_z, moving_time=1.5)
 
             # Release the object
             bot.gripper.open()
@@ -50,7 +52,8 @@ def main():
             bot.arm.go_to_sleep_pose()
 
             # Move back up before next cycle
-            bot.base.move_to_pose(cargo_pos_x, cargo_pos_y, 0.314, True)
+            bot.camera.pan_tilt_move(0,0.2618)
+            bot.base.move_to_pose(cargo_pos_x, cargo_pos_y, -.314, True)
             bot.camera.pan_tilt_move(0,0.75)
             bot.arm.set_ee_pose_components(x=0.3, z=0.2, moving_time=1.5)
             bot.gripper.open()
@@ -65,7 +68,7 @@ def main():
     bot.camera.pan_tilt_move(0,0.2618)
     
 
-    bot.base.move_to_pose(0, 0, -1.7, True)
+    bot.base.move_to_pose(0, 0, 0, True)
 
     bot.arm.set_ee_pose_components(x=0.3, z=0.1, moving_time=1.5)
     bot.camera.pan_tilt_move(0,0)
