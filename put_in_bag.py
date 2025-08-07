@@ -26,9 +26,6 @@ def main():
     #cargo_pos_x = 0.35
     #cargo_pos_y = 1.4
     rotation_cargo = 0
-    drop_x = -0.6
-    drop_y = 1.21
-    drop_z = 0.5
     rotation_drop = 2.9
     bot.base.move_to_pose(cargo_pos_x, cargo_pos_y, rotation_cargo, True)
     bot.camera.pan_tilt_move(0,0.75)
