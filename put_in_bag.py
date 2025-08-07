@@ -19,13 +19,13 @@ def main():
     #drop_y = float(input("Please enter the y-coordinate of the drop-off position: "))
     #drop_z = float(input("Please enter the z-coordinate of the drop-off position: "))
     #rotation_drop = float(input("Please enter the rotation of the locobot in the direction of the drop-off orientation: "))
-    cargo_pos_x = 0.5
-    cargo_pos_y = -0.5
-    rotation_cargo = -0.785
-    drop_x = 0.1
-    drop_y = -0.1
+    cargo_pos_x = 0.35
+    cargo_pos_y = 1.4
+    rotation_cargo = 0
+    drop_x = -0.6
+    drop_y = 1.21
     drop_z = 0.5
-    rotation_drop = 0
+    rotation_drop = 2.9
     bot.base.move_to_pose(cargo_pos_x, cargo_pos_y, rotation_cargo, True)
     bot.camera.pan_tilt_move(0,0.75)
     success, clusters = bot.pcl.get_cluster_positions(ref_frame="locobot/arm_base_link", sort_axis="y", reverse=True)
@@ -58,7 +58,7 @@ def main():
 
             # Release the object
             bot.gripper.open()
-            bot.base.move_to_pose(drop_x-0.4, drop_y-0.4, -3.14, True)
+            bot.base.move_to_pose(drop_x, drop_y, -3.14, True)
             bot.arm.go_to_home_pose()
             bot.arm.go_to_sleep_pose()
 
