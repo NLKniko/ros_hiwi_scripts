@@ -12,15 +12,19 @@ from geometry_msgs.msg import Twist
 def main():
     bot = InterbotixLocobotXS(robot_model="locobot_wx250s", arm_model="mobile_wx250s", use_move_base_action=True)
     bot.camera.pan_tilt_move(0,0.2618)
-    #cargo_pos_x = float(input("Please enter the x-coordinate of cargo position: "))
-    #cargo_pos_y = float(input("Please enter the y-coordinate of cargo position: "))
+    cargo_pos = input("Please enter the x,y coordinates of the cargo: ")
+    cargo_x_str, cargo_y_str = cargo_pos.split(',')
+    cargo_pos_x = float(cargo_x_str)
+    cargo_pos_y = float(cargo_y_str)
     #rotation_cargo = float(input("Please enter the rotation of cargo's orientation: "))
-    #drop_x = float(input("Please enter the x-coordinate of the drop-off position: "))
-    #drop_y = float(input("Please enter the y-coordinate of the drop-off position: "))
-    #drop_z = float(input("Please enter the z-coordinate of the drop-off position: "))
+    drop_pos = input("Please enter the x,y,z coordinates of the drop-off position: ")
+    drop_x_str, drop_y_str, drop_z_str = drop_pos.split(',')
+    drop_x = float(drop_x_str)
+    drop_y = float(drop_y_str)
+    drop_z = float(drop_z_str)
     #rotation_drop = float(input("Please enter the rotation of the locobot in the direction of the drop-off orientation: "))
-    cargo_pos_x = 0.35
-    cargo_pos_y = 1.4
+    #cargo_pos_x = 0.35
+    #cargo_pos_y = 1.4
     rotation_cargo = 0
     drop_x = -0.6
     drop_y = 1.21
