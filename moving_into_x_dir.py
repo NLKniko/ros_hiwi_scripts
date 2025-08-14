@@ -3,6 +3,7 @@ from geometry_msgs.msg import Twist
 from math import pi
 import time
 
+# basic command to make locobot move into certain direction through rospy
 class locobot():
     def __init__(self):
         rospy.init_node("locobot_move")

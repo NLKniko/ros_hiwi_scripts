@@ -1,4 +1,4 @@
-from math import pi
+import math
 import time
 from interbotix_xs_modules.locobot import InterbotixLocobotXS
 import rospy
@@ -12,22 +12,26 @@ from geometry_msgs.msg import Twist
 def main():
     bot = InterbotixLocobotXS(robot_model="locobot_wx250s", arm_model="mobile_wx250s", use_move_base_action=True)
     bot.camera.pan_tilt_move(0,0.2618)
+    
+    # definition of the cargo's position
     cargo_pos = input("Please enter the x,y coordinates of the cargo: ")
     cargo_x_str, cargo_y_str = cargo_pos.split(',')
     cargo_pos_x = float(cargo_x_str)
     cargo_pos_y = float(cargo_y_str)
-    #rotation_cargo = float(input("Please enter the rotation of cargo's orientation: "))
+    rotation_cargo = float(input("Please enter the rotation of cargo's orientation: ")) # counterclockwise, 3.14 represents 180 degree.
+    
+    # definition of the drop-off position
     drop_pos = input("Please enter the x,y,z coordinates of the drop-off position: ")
     drop_x_str, drop_y_str, drop_z_str = drop_pos.split(',')
     drop_x = float(drop_x_str)
     drop_y = float(drop_y_str)
     drop_z = float(drop_z_str)
-    #rotation_drop = float(input("Please enter the rotation of the locobot in the direction of the drop-off orientation: "))
-    #cargo_pos_x = 0.35
-    #cargo_pos_y = 1.4
-    rotation_cargo = 0
-    rotation_drop = 2.9
+    rotation_drop = float(input("Please enter the rotation of the locobot in the direction of the drop-off orientation: ")) # counterclockwise, 3.14 represents 180 degree.
+
+    # move the robot to the cargo's position
     bot.base.move_to_pose(cargo_pos_x, cargo_pos_y, rotation_cargo, True)
+
+    # start the perception using realsense
     bot.camera.pan_tilt_move(0,0.75)
     success, clusters = bot.pcl.get_cluster_positions(ref_frame="locobot/arm_base_link", sort_axis="y", reverse=True)
 
@@ -40,11 +44,12 @@ def main():
 
             # Move above the object
             bot.arm.set_ee_pose_components(x=x, y=y, z=z+0.05, pitch=0.5)
-            bot.arm.set_ee_pose_components(x=x, y=y, z=z+0.01, pitch=0.5)
+            bot.arm.set_ee_pose_components(x=x, y=y, z=z, pitch=0.5)
 
             # Close gripper to grasp
             bot.gripper.close()
             time.sleep(1)
+            bot.camera.pan_tilt_move(0,0)
 
             # Move up after grasping
             bot.arm.set_ee_pose_components(x=x, y=y, z=z+0.05, pitch=-0.5)
@@ -52,14 +57,16 @@ def main():
             bot.arm.go_to_sleep_pose()
 
             # Move to drop-off location (adjust as needed)
-            # drop_x, drop_y = 0, 0  # Example drop-off coordinates
             bot.camera.pan_tilt_move(0,0.2618)
-            bot.base.move_to_pose(drop_x-0.1, drop_y-0.1, rotation_drop, True)
-            bot.arm.set_ee_pose_components(x=0.35, y=0, z=drop_z, moving_time=1.5)
+            bot.base.move_to_pose(drop_x, drop_y, rotation_drop, True)
+            bot.arm.set_single_joint_position("waist", math.pi/2.0) # set arm to rotate in order to avoid obstacle
+            bot.camera.pan_tilt_move(0,0)
+            bot.arm.set_ee_pose_components(x=0, y=0.35, z=drop_z, moving_time=1.5)
+            bot.arm.set_single_joint_position("waist", -math.pi/2.0)
 
             # Release the object
             bot.gripper.open()
-            bot.base.move_to_pose(drop_x, drop_y, -3.14, True)
+            bot.base.move_to_pose(drop_x, drop_y, 3.14, True)
             bot.arm.go_to_home_pose()
             bot.arm.go_to_sleep_pose()
 
