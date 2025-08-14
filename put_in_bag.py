@@ -58,11 +58,10 @@ def main():
 
             # Move to drop-off location (adjust as needed)
             bot.camera.pan_tilt_move(0,0.2618)
-            bot.base.move_to_pose(drop_x, drop_y, rotation_drop, True)
-            bot.arm.set_single_joint_position("waist", math.pi/2.0) # set arm to rotate in order to avoid obstacle
+            bot.base.move_to_pose(drop_x, drop_y, rotation_drop+1.57, True) # set arm to rotate in order to avoid obstacle
             bot.camera.pan_tilt_move(0,0)
-            bot.arm.set_ee_pose_components(x=0, y=0.35, z=drop_z, moving_time=1.5)
-            bot.arm.set_single_joint_position("waist", -math.pi/2.0)
+            bot.arm.set_ee_pose_components(x=0.35, y=0, z=drop_z, moving_time=1.5)
+            bot.base.move_to_pose(drop_x, drop_y, rotation_drop, True)
 
             # Release the object
             bot.gripper.open()
