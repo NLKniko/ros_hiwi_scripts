@@ -21,11 +21,10 @@ def main():
     rotation_cargo = float(input("Please enter the rotation of cargo's orientation: ")) # counterclockwise, 3.14 represents 180 degree.
     
     # definition of the drop-off position
-    drop_pos = input("Please enter the x,y,z coordinates of the drop-off position: ")
-    drop_x_str, drop_y_str, drop_z_str = drop_pos.split(',')
+    drop_pos = input("Please enter the x,y coordinates of the drop-off position: ")
+    drop_x_str, drop_y_str = drop_pos.split(',')
     drop_x = float(drop_x_str)
     drop_y = float(drop_y_str)
-    drop_z = float(drop_z_str)
     rotation_drop = float(input("Please enter the rotation of the locobot in the direction of the drop-off orientation: ")) # counterclockwise, 3.14 represents 180 degree.
 
     # move the robot to the cargo's position
@@ -66,7 +65,7 @@ def main():
 
             # Release the object
             bot.gripper.open()
-            bot.base.move_to_pose(drop_x, drop_y, 3.14, True)
+            bot.base.move_to_pose(drop_x, drop_y, rotation_drop+1.57, True)
             bot.arm.go_to_home_pose()
             bot.arm.go_to_sleep_pose()
 
